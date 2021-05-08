@@ -125,6 +125,6 @@ public class GrafoL {
         grafo.imprimir();
         
         System.out.println("Resultado de recorrido en anchura): ");
-        System.out.println(Arrays.toString(RecorridosGrafos.anchura(grafo, "5")));
+        System.out.println(Arrays.toString(RecorridosGrafos.profundidad(grafo, "5")));
     }
 }

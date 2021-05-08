@@ -49,31 +49,66 @@ public class RecorridosGrafos {
         }
         m = new int[g.numeroDeVertices];
         for (int i = 0; i < g.numeroDeVertices; i++) {
-                m[i] = INFINITO;
-            }
+            m[i] = INFINITO;
+        }
         LinkedList<Integer> cola = new LinkedList();
         boolean[] visitado = new boolean[g.numeroDeVertices];
         m[vertOrig] = 0;
         cola.add(vertOrig);
-        while(!cola.isEmpty()){
+        while (!cola.isEmpty()) {
             int indice = cola.remove();
-            
-                visitado[indice] = true;
-                if (g.tablaVertices[indice].tieneConexiones()) {
-                    ListaAristas temporal = g.tablaVertices[indice].aristas;
-                    NodoArista puntero = temporal.cabeza;
-                    while (puntero != null) {
-                        int indiceDestino = puntero.data.destino;
-                        if(!visitado[indiceDestino]){
-                            m[indiceDestino] = m[indice] + 1;
-                            cola.add(indiceDestino);
-                        }
-                        puntero = puntero.siguiente;
+            visitado[indice] = true;
+            if (g.tablaVertices[indice].tieneConexiones()) {
+                ListaAristas temporal = g.tablaVertices[indice].aristas;
+                NodoArista puntero = temporal.cabeza;
+                while (puntero != null) {
+                    int indiceDestino = puntero.data.destino;
+                    if (!visitado[indiceDestino]) {
+                        m[indiceDestino] = m[indice] + 1;
+                        cola.add(indiceDestino);
                     }
+                    puntero = puntero.siguiente;
                 }
-            
+            }
+
         }
         return m;
+    }
+
+    public static int[] profundidad(GrafoL g, String nodoOrig) throws Exception {
+        int vertOrig = g.numVertice(nodoOrig);
+        if (vertOrig < 0) {
+            throw new Exception("Vértice origen no existe");
+        }
+        int n = g.numeroDeVertices;
+        boolean[] visitados = new boolean[n];
+        int[] m = new int[n];
+        for (int i = 0; i < g.numeroDeVertices; i++) {
+            m[i] = INFINITO;
+        }
+        profundidadHelper(m, visitados, n, g, vertOrig);
+        m[vertOrig] = 0;
+        return m;
+    }
+
+    public static void profundidadHelper(int[] m, boolean[] visitados, int n, GrafoL g, int vertOrig) {
+        if (visitados[vertOrig]) {
+            return;
+        }
+        visitados[vertOrig] = true;
+        if (g.tablaVertices[vertOrig].tieneConexiones()) {
+            ListaAristas temporal = g.tablaVertices[vertOrig].aristas;
+            NodoArista puntero = temporal.cabeza;
+            while (puntero != null) {
+                int indiceDestino = puntero.data.destino;
+                if (!visitados[indiceDestino]) {
+                    profundidadHelper(m, visitados, n, g, indiceDestino);
+                }
+                puntero = puntero.siguiente;
+            }
+        }
+        m[vertOrig] = 1;
+
     }
 
     public static int[] profundidad(GrafoM g, String nodoOrigen) throws Exception {
