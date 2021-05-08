@@ -40,6 +40,42 @@ public class RecorridosGrafos {
         }
     }
 
+    public static int[] anchura(GrafoL g, String nodoOrigen) throws Exception {
+        int vertOrig;
+        int[] m;
+        vertOrig = g.numVertice(nodoOrigen);
+        if (vertOrig < 0) {
+            throw new Exception("Vértice origen no existe");
+        }
+        m = new int[g.numeroDeVertices];
+        for (int i = 0; i < g.numeroDeVertices; i++) {
+                m[i] = INFINITO;
+            }
+        LinkedList<Integer> cola = new LinkedList();
+        boolean[] visitado = new boolean[g.numeroDeVertices];
+        m[vertOrig] = 0;
+        cola.add(vertOrig);
+        while(!cola.isEmpty()){
+            int indice = cola.remove();
+            
+                visitado[indice] = true;
+                if (g.tablaVertices[indice].tieneConexiones()) {
+                    ListaAristas temporal = g.tablaVertices[indice].aristas;
+                    NodoArista puntero = temporal.cabeza;
+                    while (puntero != null) {
+                        int indiceDestino = puntero.data.destino;
+                        if(!visitado[indiceDestino]){
+                            m[indiceDestino] = m[indice] + 1;
+                            cola.add(indiceDestino);
+                        }
+                        puntero = puntero.siguiente;
+                    }
+                }
+            
+        }
+        return m;
+    }
+
     public static int[] profundidad(GrafoM g, String nodoOrigen) throws Exception {
         int actual, vertOrig;
         int[] m;
@@ -119,6 +155,5 @@ public class RecorridosGrafos {
         sb.deleteCharAt(sb.lastIndexOf(">"));
         System.out.println(sb.toString());
     }
-    
-    
+
 }

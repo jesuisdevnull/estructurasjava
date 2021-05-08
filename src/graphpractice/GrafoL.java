@@ -1,5 +1,7 @@
 package graphpractice;
 
+import java.util.Arrays;
+
 /**
  *
  * @author JESUS
@@ -121,5 +123,8 @@ public class GrafoL {
         
         System.out.println("Grafo representado en lista de adyacencia:\n");
         grafo.imprimir();
+        
+        System.out.println("Resultado de recorrido en anchura): ");
+        System.out.println(Arrays.toString(RecorridosGrafos.anchura(grafo, "5")));
     }
 }

@@ -15,6 +15,10 @@ public class VerticeL {
         aristas = new ListaAristas();
     }
     
+    public boolean tieneConexiones(){
+        return aristas.numeroAristas > 0;
+    }
+    
     public String getNombre(){
         return nombre;
     }
