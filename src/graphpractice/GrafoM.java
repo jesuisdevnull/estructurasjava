@@ -104,6 +104,32 @@ public class GrafoM {
         gradoSalida[fila]++;
         gradoEntrada[columna]++;
     }
+    
+    public void añadirArista(String origen, String destino, int peso) {
+        int fila = numVertice(origen);
+        if (fila < 0) {
+            System.out.println("ERROR: El vertice \"" + origen + "\" no existe.");
+            return;
+        }
+        int columna = numVertice(destino);
+        if (columna < 0) {
+            System.out.println("ERROR: El vertice \"" + destino + "\" no existe.");
+            return;
+        }
+        matrizAdyacencia[fila][columna] = peso;
+        gradoSalida[fila]++;
+        gradoEntrada[columna]++;
+    }
+
+    public void añadirArista(int fila, int columna, int peso) {
+        if (fila < 0 || columna < 0) {
+            System.out.println("ERROR: Por lo menos una de las aristas no existe.");
+            return;
+        }
+        matrizAdyacencia[fila][columna] = peso;
+        gradoSalida[fila]++;
+        gradoEntrada[columna]++;
+    }
 
     public void removerArista(String origen, String destino) {
         int fila = numVertice(origen);
@@ -140,14 +166,14 @@ public class GrafoM {
         if (columna < 0) {
             throw new Exception("Vertice inexistente.");
         }
-        return matrizAdyacencia[fila][columna] == 1;
+        return matrizAdyacencia[fila][columna] != 0;
     }
 
     public boolean sonAdyacentes(int fila, int columna) throws Exception {
         if (fila < 0 || columna < 0) {
             throw new Exception("Vertice inexistente.");
         }
-        return matrizAdyacencia[fila][columna] == 1;
+        return matrizAdyacencia[fila][columna] != 0;
     }
 
     public String matrizCaminos() throws Exception {
@@ -211,33 +237,44 @@ public class GrafoM {
         GrafoM grafo = new GrafoM(7);
         
         
-        grafo.añadirVertice("A");
-        grafo.añadirVertice("B");
-        grafo.añadirVertice("C");
-        grafo.añadirVertice("D");
-        grafo.añadirVertice("E");
+        grafo.añadirVertice("1");
+        grafo.añadirVertice("2");
+        grafo.añadirVertice("3");
+        grafo.añadirVertice("4");
+        grafo.añadirVertice("5");
+        grafo.añadirVertice("6");
+        grafo.añadirVertice("7");
+        
+        grafo.añadirArista("1","6",10);
+        grafo.añadirArista("6","1",10);
+        
+        grafo.añadirArista("6","5",25);
+        grafo.añadirArista("5","6",25);
+        
+        grafo.añadirArista("5","4",22);
+        grafo.añadirArista("4","5",22);
+        
+        grafo.añadirArista("4","3",12);
+        grafo.añadirArista("3","4",12);
+        
+        grafo.añadirArista("4","7",18);
+        grafo.añadirArista("7","4",18);
+        
+        grafo.añadirArista("5","7",24);
+        grafo.añadirArista("7","5",24);
+        
+        grafo.añadirArista("7","2",14);
+        grafo.añadirArista("2","7",14);
+        
+        grafo.añadirArista("2","3",16);
+        grafo.añadirArista("3","2",16);
+        
+        grafo.añadirArista("1","2",28);
+        grafo.añadirArista("2","1",28);
         
         
-        grafo.añadirArista("A","B");
-        grafo.añadirArista("B","A");
-        grafo.añadirArista("A","C");
-        grafo.añadirArista("C","A");
-        grafo.añadirArista("B","C");
-        grafo.añadirArista("C","B");
-        grafo.añadirArista("C","D");
-        grafo.añadirArista("E","D");
-        grafo.añadirArista("D","E");
+        AlgoritmosGrafos ag = new AlgoritmosGrafos();
         
-        
-        System.out.println(grafo.toString());
-        
-        
-        System.out.print("Puntos de articulacion en el grafo: ");
-        LinkedList<Integer> indicesPA = AlgoritmosGrafos.articulacion(grafo);
-        System.out.print("[ ");
-        for(Integer e:indicesPA){
-            System.out.print(grafo.vertices[e].nombre + " ");
-        }
-        System.out.println("]");
+        ag.kruskall(grafo);
     }
 }

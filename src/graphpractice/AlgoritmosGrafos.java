@@ -1,7 +1,9 @@
 package graphpractice;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 /**
  *
@@ -9,6 +11,34 @@ import java.util.LinkedList;
  */
 public class AlgoritmosGrafos {
 
+    private class VerticeKruskall implements Comparable<VerticeKruskall>, Comparator<VerticeKruskall>{
+        int origen;
+        int destino;
+        float peso;
+        
+        public VerticeKruskall(int orig, int dest, float pes){
+            origen = orig;
+            destino = dest;
+            peso = pes;
+        }
+        
+        @Override 
+        public String toString(){
+            return "("+this.origen+","+this.destino+","+this.peso+")";
+        }
+
+        @Override
+        public int compareTo(VerticeKruskall o) {
+            Float f = peso;
+            Float f2 = o.peso;
+            return f.compareTo(f2);
+        }
+
+        @Override
+        public int compare(VerticeKruskall o1, VerticeKruskall o2) {
+            return (int) ((int) o1.peso - o2.peso);
+        }
+    }
     static final int INFINITO = 1000000;
     public static int[][] warshall(GrafoM g) throws Exception {
         int n = g.numeroVertices;
@@ -168,6 +198,65 @@ public class AlgoritmosGrafos {
             }
         }
         return artic;
+    }
+    
+    public int encontrarPadre(int[] padres, int nodo){
+        if(padres[nodo]==nodo){
+            return nodo;
+        }
+        return encontrarPadre(padres, padres[nodo]);
+    }
+    
+    public void unir(int[] padres, int origen, int destino){
+        int padreOrigen = encontrarPadre(padres, origen);
+        int padreDestino = encontrarPadre(padres, destino);
+        padres[padreOrigen] = padreDestino;
+    }
+    
+    public void kruskall(GrafoM g) throws Exception{
+        int n = g.numeroVertices;
+        int[] padres = new int[n];
+        for (int i = 0; i < n; i++){
+            padres[i]=i;
+        }
+        //Primero, obtenemos todas las aristas no negativas del grafo, y las metemos en una heap.
+        PriorityQueue<VerticeKruskall> monticulo = new PriorityQueue();
+        for(int i = -1; i < n-1; i++){
+            for(int j = i+1; j < n; j++){
+                if (g.sonAdyacentes(i+1, j)){
+                    monticulo.add(new VerticeKruskall(i+1, j, g.matrizAdyacencia[i+1][j]));
+                }
+            }
+        }
+        LinkedList<VerticeKruskall> MST = new LinkedList();
+        ///
+        while(MST.size() != n-1 || !monticulo.isEmpty()){
+            VerticeKruskall temp = monticulo.remove();
+            if(encontrarPadre(padres,temp.origen)!=encontrarPadre(padres,temp.destino)){
+                unir(padres,temp.origen,temp.destino);
+                MST.add(temp);
+            }
+        }
+        
+        ///
+        VerticeKruskall temp;
+        System.out.print("{");
+        float count = 0;
+        if (monticulo.isEmpty() && MST.size() != n-1) {
+            System.out.println("ARBOL NO VALIDO:");
+        }
+        while (!MST.isEmpty()){
+            temp = MST.removeFirst();
+            System.out.print(temp.toString());
+            if (!MST.isEmpty()){
+                System.out.print(";");
+            }
+            count = count + temp.peso;
+        }
+        System.out.println("}");
+        System.out.println("Peso total del MST: " + count);
+        
+        
     }
 
     
